@@ -20,7 +20,7 @@ enum MapSheet: Identifiable {
 
 /// 地図を全面に表示するメイン画面。
 /// コンパクト幅では一覧・詳細をシートで、レギュラー幅 (iPad など) では
-/// 地図の左に重ねるサイドパネルで表示する。
+/// 同じコンテンツを左下のフローティングカードで表示する。
 struct RootMapView: View {
     @Environment(ContactsModel.self) private var model
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -68,23 +68,28 @@ struct RootMapView: View {
             .simultaneousGesture(dropPinGesture(proxy: proxy))
         }
         .overlay(alignment: .topLeading) {
-            if isWidePresentation {
-                sidePanel
-            } else {
-                groupMenuCapsule
-                    .padding(.leading)
-                    .padding(.top, 8)
-            }
+            groupMenuCapsule
+                .padding(.leading)
+                .padding(.top, 8)
         }
-        .overlay(alignment: isWidePresentation ? .bottom : .top) {
-            // ワイド時はサイドパネルと重ならないよう下部に出す
+        .overlay(alignment: .top) {
             statusIndicator
                 .padding(.top, 64)
-                .padding(.bottom, 24)
+        }
+        .overlay(alignment: .bottomLeading) {
+            // レギュラー幅ではシートの代わりに左下のフローティングカードで表示する
+            if isWidePresentation, let sheet = activeSheet {
+                floatingCard(for: sheet)
+            }
         }
         .safeAreaInset(edge: .bottom) {
             if !isWidePresentation {
                 searchBar
+            } else if activeSheet == nil {
+                // iPhone と同じ検索チップを、地図を隠さない幅で左寄せに置く
+                searchBar
+                    .frame(maxWidth: 420)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
         .overlay {
@@ -123,29 +128,43 @@ struct RootMapView: View {
 
     // MARK: - Presentation
 
-    /// レギュラー幅ではシートの代わりにサイドパネルで表示する
+    /// レギュラー幅ではシートの代わりにフローティングカードで表示する
     private var isWidePresentation: Bool {
         horizontalSizeClass == .regular
     }
 
     /// コンパクト幅のときだけシートを出す。レギュラー幅では常に nil を返し、
-    /// 選択状態 (`activeSheet`) はサイドパネル側で描画する。
+    /// 選択状態 (`activeSheet`) はフローティングカード側で描画する。
     private var sheetBinding: Binding<MapSheet?> {
         isWidePresentation ? .constant(nil) : $activeSheet
     }
 
     // MARK: - Subviews
 
-    private var sidePanel: some View {
-        SidePanelView(
-            selection: activeSheet,
-            onClose: {
-                activeSheet = nil
-                droppedPin = nil
-            },
-            onSelectContact: { focus(on: $0) }
-        ) { sheet in
+    @ViewBuilder
+    private func floatingCard(for sheet: MapSheet) -> some View {
+        // 一覧はナビゲーションバーに「閉じる」を持つため ✕ を重ねない
+        let hasOwnCloseButton: Bool = switch sheet {
+        case .contactList: true
+        case .place, .contact, .location: false
+        }
+        FloatingCardView(
+            height: cardHeight(for: sheet),
+            showsCloseButton: !hasOwnCloseButton,
+            onClose: closeSelection
+        ) {
             sheetContent(for: sheet)
+        }
+    }
+
+    /// コンテンツ量に応じたカードの最大高さ。
+    /// 詳細系は必要最小限にして地図の視認性を優先する。
+    private func cardHeight(for sheet: MapSheet) -> CGFloat {
+        switch sheet {
+        case .contactList: 480
+        case .place(let place): place.contacts.count == 1 ? 360 : 480
+        case .contact: 360
+        case .location: 320
         }
     }
 
@@ -229,9 +248,10 @@ struct RootMapView: View {
     private func sheetContent(for sheet: MapSheet) -> some View {
         switch sheet {
         case .contactList:
-            ContactListSheetView { contact in
-                focus(on: contact)
-            }
+            ContactListSheetView(
+                onSelect: { contact in focus(on: contact) },
+                onClose: closeSelection
+            )
         case .place(let place):
             PlaceSheetView(place: place)
         case .contact(let contact):
@@ -242,6 +262,11 @@ struct RootMapView: View {
     }
 
     // MARK: - Actions
+
+    private func closeSelection() {
+        activeSheet = nil
+        droppedPin = nil
+    }
 
     /// 一覧から選んだ連絡先へ地図を移動し、概要シートを開く
     /// (Android版 showMarkerInfoWindow(animate:) 相当)。
@@ -255,7 +280,7 @@ struct RootMapView: View {
             }
         }
         if isWidePresentation {
-            // サイドパネル内の切り替えなので即座に表示できる
+            // カード内の切り替えなので即座に表示できる
             activeSheet = .contact(contact)
         } else {
             activeSheet = nil

@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// グループ絞り込み+再読み込みのメニュー。
-/// ラベルの見た目は呼び出し側(地図上のカプセル/サイドパネルの行)が決める。
+/// ラベルの見た目は呼び出し側が決める。
 struct GroupMenuView<LabelContent: View>: View {
     @Environment(ContactsModel.self) private var model
     @ViewBuilder let label: (String) -> LabelContent

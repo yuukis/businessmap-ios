@@ -1,11 +1,14 @@
 import SwiftUI
 
-/// 検索付きの連絡先一覧シート(コンパクト幅用。Android版の一覧パネル+SearchBar 相当)。
+/// 検索付きの連絡先一覧(Android版の一覧パネル+SearchBar 相当)。
+/// コンパクト幅ではシートとして、レギュラー幅ではフローティングカード内で使う。
 struct ContactListSheetView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var query = ""
 
     let onSelect: (Contact) -> Void
+    /// カード内など、シートの dismiss が効かない場所で閉じるための差し替え
+    var onClose: (() -> Void)?
 
     var body: some View {
         NavigationStack {
@@ -19,14 +22,20 @@ struct ContactListSheetView: View {
                 )
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
-                        Button("common.close") { dismiss() }
+                        Button("common.close") {
+                            if let onClose {
+                                onClose()
+                            } else {
+                                dismiss()
+                            }
+                        }
                     }
                 }
         }
     }
 }
 
-/// 検索クエリで絞り込んだ連絡先一覧。シートとサイドパネルの両方で使う。
+/// 検索クエリで絞り込んだ連絡先一覧。
 struct ContactListBody: View {
     @Environment(ContactsModel.self) private var model
 

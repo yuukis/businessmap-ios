@@ -23,9 +23,11 @@ Apple 標準 API のみで独立に実装しています。
 - 現在地表示 (Core Location / MapUserLocationButton)
 - 最後に表示していた地図領域の保存・復元 (UserDefaults、初期値は東京駅)
 - 文言のローカライズ分離 (String Catalog、日本語/英語)
-- iPad などレギュラー幅ではシートの代わりに地図左のフローティングパネルで
-  検索・一覧・詳細を表示 (サイズクラスで自動切替、Android版タブレットの
-  サイドドロワー相当)
+- iPad などレギュラー幅ではシートの代わりに、開いたときだけ地図左下に
+  出るフローティングカードで一覧・詳細を表示 (サイズクラスで自動切替。
+  検索チップ・グループメニューは iPhone と共通)
+- CLGeocoder のスロットリング (オンラインでも CLError.network を返す) に
+  対するリトライ+バックオフ
 
 ## アーキテクチャ
 
@@ -37,7 +39,7 @@ BusinessMap/
 ├── Models/         Contact / ContactGroup / MapPlace / DroppedPin
 ├── ViewModels/     ContactsModel — 連絡先・グループ・ジオコーディング進捗の状態
 ├── Views/          RootMapView ほか SwiftUI 画面と ContactsUI ブリッジ
-│                   (レギュラー幅用の SidePanelView を含む)
+│                   (レギュラー幅用の FloatingCardView を含む)
 ├── Services/
 │   ├── ContactRepository     Contacts framework の読み取り
 │   ├── GeocodingService      CLGeocoder の直列ラッパー (actor)
@@ -109,7 +111,7 @@ xcodebuild test \
 | 連絡先リストの直列化キャッシュ | なし | CNContact の読み取りは十分速く、座標キャッシュだけで起動が速いため |
 | カメラの tilt / bearing 保存 | 中心座標とスパンのみ保存 | SwiftUI `Map` の region ベース API に合わせた簡略化 |
 | Android Shortcuts (グループ直行) | 非対応 | MVP 対象外。将来 App Intents / App Shortcuts で検討 |
-| タブレットの一覧サイドドロワー (sw600dp: 320dp / sw720dp: 400dp) | レギュラー幅で地図左のフローティングパネル (360pt) | Apple マップの iPad レイアウトに合わせた。グループ選択・検索・詳細もパネル内に統合 |
+| タブレットの一覧サイドドロワー (sw600dp: 320dp / sw720dp: 400dp) | レギュラー幅で左下のフローティングカード (380pt 幅、内容に応じた高さ) | 地図の視認性と iPhone UI との一貫性を優先。シートと同じコンテンツをカードに載せ替えるだけの構成 |
 | グループのアカウント名表示 | グループ名のみ | CNGroup にアカウント表示の慣習がなく、MVP では簡略化 |
 
 ## 未実装・後回しにした機能
