@@ -151,7 +151,7 @@ final class ContactsModel {
 
         for (index, address) in addresses.enumerated() {
             do {
-                let coordinate = try await geocoding.coordinate(for: address)
+                let coordinate = try await geocodeWithRetry(address)
                 cache?.save(address, latitude: coordinate?.latitude, longitude: coordinate?.longitude)
                 if let coordinate {
                     applyCoordinate(coordinate, to: address)
@@ -165,8 +165,23 @@ final class ContactsModel {
             }
             geocodingProgress = GeocodingProgress(done: index + 1, total: addresses.count)
             // CLGeocoder のレート制限対策として問い合わせ間隔を空ける
-            try? await Task.sleep(for: .milliseconds(300))
+            try? await Task.sleep(for: .milliseconds(600))
         }
+    }
+
+    /// CLGeocoder はリクエストが集中すると、端末がオンラインでも
+    /// CLError.network を返してスロットリングする。少し待って再試行し、
+    /// それでも失敗する場合だけエラーとして扱う。
+    private func geocodeWithRetry(_ address: String) async throws -> CLLocationCoordinate2D? {
+        let retryDelays: [Duration] = [.seconds(3), .seconds(10)]
+        for delay in retryDelays {
+            do {
+                return try await geocoding.coordinate(for: address)
+            } catch {
+                try? await Task.sleep(for: delay)
+            }
+        }
+        return try await geocoding.coordinate(for: address)
     }
 
     private func applyCoordinate(_ coordinate: CLLocationCoordinate2D, to address: String) {

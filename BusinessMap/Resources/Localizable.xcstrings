@@ -57,14 +57,14 @@
     },
     "error.geocoding.message" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Failed to convert addresses to coordinates because the network is unavailable. Remaining addresses will be retried on the next reload." } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ネットワークへの接続に失敗したため、住所から座標へ変換できませんでした。残りの住所は次回の再読み込みで再試行されます。" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "The network is unavailable or address lookups are temporarily rate limited. Remaining addresses will be retried on the next reload." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ネットワークに接続できないか、住所変換のリクエストが一時的に制限されています。残りの住所は次回の再読み込みで再試行されます。" } }
       }
     },
     "error.geocoding.title" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Network Unavailable" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ネットワークに接続できません" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Address Lookup Paused" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "住所の変換を中断しました" } }
       }
     },
     "geocoding.progress" : {
