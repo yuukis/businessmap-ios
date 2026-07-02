@@ -1,0 +1,17 @@
+# macOS
+.DS_Store
+
+# Xcode
+xcuserdata/
+DerivedData/
+build/
+*.xcresult
+
+# XcodeGen で生成されるため、プロジェクトファイルはコミットしない
+*.xcodeproj
+
+# XcodeGen が生成する Info.plist
+BusinessMap/Info.plist
+
+# Swift Package Manager
+.build/

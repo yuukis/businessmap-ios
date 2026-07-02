@@ -1,0 +1,24 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Business Map" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "営業マップ" } }
+      }
+    },
+    "NSContactsUsageDescription" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Business Map shows contacts that have postal addresses on the map." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "住所が登録された連絡先を地図に表示するために使用します。" } }
+      }
+    },
+    "NSLocationWhenInUseUsageDescription" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Your current location is shown on the map." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "現在地を地図に表示するために使用します。" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}

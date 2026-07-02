@@ -1,0 +1,156 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "action.directions" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Directions" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "経路" } }
+      }
+    },
+    "action.register_contact" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Add Contact" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "連絡先に登録" } }
+      }
+    },
+    "action.reload" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Reload Contacts" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "連絡先を再読み込み" } }
+      }
+    },
+    "action.show_contact" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Show Contact" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "連絡先を表示" } }
+      }
+    },
+    "common.close" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Close" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "閉じる" } }
+      }
+    },
+    "common.ok" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "OK" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "OK" } }
+      }
+    },
+    "contact.no_name" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "No Name" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "名前なし" } }
+      }
+    },
+    "error.contacts.message" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Could not read your contacts. Please try again." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "連絡先を読み込めませんでした。もう一度お試しください。" } }
+      }
+    },
+    "error.contacts.title" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Failed to Load Contacts" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "連絡先の取得に失敗しました" } }
+      }
+    },
+    "error.geocoding.message" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Failed to convert addresses to coordinates because the network is unavailable. Remaining addresses will be retried on the next reload." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ネットワークへの接続に失敗したため、住所から座標へ変換できませんでした。残りの住所は次回の再読み込みで再試行されます。" } }
+      }
+    },
+    "error.geocoding.title" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Network Unavailable" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ネットワークに接続できません" } }
+      }
+    },
+    "geocoding.progress" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Converting addresses… (%1$d/%2$d)" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "住所を座標に変換しています… (%1$d/%2$d)" } }
+      }
+    },
+    "group.all_contacts" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "All Contacts" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "すべての連絡先" } }
+      }
+    },
+    "list.empty" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "No Contacts" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "連絡先がありません" } }
+      }
+    },
+    "list.empty.description" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "There are no contacts in this group." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "このグループに連絡先はありません。" } }
+      }
+    },
+    "list.title" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Contacts" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "連絡先" } }
+      }
+    },
+    "loading.contacts" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Loading contacts…" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "連絡先を読み込んでいます…" } }
+      }
+    },
+    "location.failed" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Failed to get the address." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "住所の取得に失敗しました" } }
+      }
+    },
+    "location.loading" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Getting address…" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "住所を取得しています…" } }
+      }
+    },
+    "location.title" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Selected Location" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "選択した地点" } }
+      }
+    },
+    "permission.contacts.message" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "To show contacts on the map, allow access to Contacts in the Settings app." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "連絡先を地図に表示するには、設定アプリで連絡先へのアクセスを許可してください。" } }
+      }
+    },
+    "permission.contacts.title" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Allow Contacts Access" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "連絡先へのアクセスを許可" } }
+      }
+    },
+    "permission.open_settings" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Open Settings" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "設定を開く" } }
+      }
+    },
+    "place.contacts_count" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "%d Contacts" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%d件の連絡先" } }
+      }
+    },
+    "search.prompt" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Find contacts" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "連絡先を検索" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}
