@@ -1,8 +1,7 @@
 import SwiftUI
 
-/// 検索付きの連絡先一覧シート(Android版の一覧パネル+SearchBar 相当)。
+/// 検索付きの連絡先一覧シート(コンパクト幅用。Android版の一覧パネル+SearchBar 相当)。
 struct ContactListSheetView: View {
-    @Environment(ContactsModel.self) private var model
     @Environment(\.dismiss) private var dismiss
     @State private var query = ""
 
@@ -10,7 +9,7 @@ struct ContactListSheetView: View {
 
     var body: some View {
         NavigationStack {
-            list
+            ContactListBody(query: query, onSelect: onSelect)
                 .navigationTitle("list.title")
                 .navigationBarTitleDisplayMode(.inline)
                 .searchable(
@@ -25,9 +24,16 @@ struct ContactListSheetView: View {
                 }
         }
     }
+}
 
-    @ViewBuilder
-    private var list: some View {
+/// 検索クエリで絞り込んだ連絡先一覧。シートとサイドパネルの両方で使う。
+struct ContactListBody: View {
+    @Environment(ContactsModel.self) private var model
+
+    let query: String
+    let onSelect: (Contact) -> Void
+
+    var body: some View {
         let filtered = ContactSearchFilter.filter(model.visibleContacts, query: query)
         if filtered.isEmpty {
             if query.isEmpty {

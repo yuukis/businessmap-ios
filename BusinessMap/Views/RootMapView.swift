@@ -19,8 +19,11 @@ enum MapSheet: Identifiable {
 }
 
 /// 地図を全面に表示するメイン画面。
+/// コンパクト幅では一覧・詳細をシートで、レギュラー幅 (iPad など) では
+/// 地図の左に重ねるサイドパネルで表示する。
 struct RootMapView: View {
     @Environment(ContactsModel.self) private var model
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @State private var position: MapCameraPosition
     @State private var activeSheet: MapSheet?
@@ -65,21 +68,35 @@ struct RootMapView: View {
             .simultaneousGesture(dropPinGesture(proxy: proxy))
         }
         .overlay(alignment: .topLeading) {
-            groupMenu
-                .padding(.leading)
-                .padding(.top, 8)
+            if isWidePresentation {
+                sidePanel
+            } else {
+                groupMenuCapsule
+                    .padding(.leading)
+                    .padding(.top, 8)
+            }
         }
-        .overlay(alignment: .top) {
+        .overlay(alignment: isWidePresentation ? .bottom : .top) {
+            // ワイド時はサイドパネルと重ならないよう下部に出す
             statusIndicator
                 .padding(.top, 64)
+                .padding(.bottom, 24)
         }
         .safeAreaInset(edge: .bottom) {
-            searchBar
+            if !isWidePresentation {
+                searchBar
+            }
         }
         .overlay {
             accessDeniedOverlay
         }
-        .sheet(item: $activeSheet, onDismiss: { droppedPin = nil }) { sheet in
+        .sheet(item: sheetBinding, onDismiss: {
+            // シートをユーザーが閉じたときだけ長押しピンを消す。
+            // サイズクラス切替による自動 dismiss では選択状態が残るため消さない。
+            if activeSheet == nil {
+                droppedPin = nil
+            }
+        }) { sheet in
             sheetContent(for: sheet)
                 .presentationDetents([.medium, .large])
                 .presentationBackgroundInteraction(.enabled(upThrough: .medium))
@@ -104,36 +121,43 @@ struct RootMapView: View {
         }
     }
 
+    // MARK: - Presentation
+
+    /// レギュラー幅ではシートの代わりにサイドパネルで表示する
+    private var isWidePresentation: Bool {
+        horizontalSizeClass == .regular
+    }
+
+    /// コンパクト幅のときだけシートを出す。レギュラー幅では常に nil を返し、
+    /// 選択状態 (`activeSheet`) はサイドパネル側で描画する。
+    private var sheetBinding: Binding<MapSheet?> {
+        isWidePresentation ? .constant(nil) : $activeSheet
+    }
+
     // MARK: - Subviews
 
-    private var groupMenu: some View {
-        @Bindable var model = model
-        return Menu {
-            Picker("group.all_contacts", selection: $model.selectedGroupID) {
-                ForEach(model.groups) { group in
-                    Text(group.name).tag(group.id)
-                }
-            }
-            .pickerStyle(.inline)
-            Divider()
-            Button {
-                Task { await model.reload() }
-            } label: {
-                Label("action.reload", systemImage: "arrow.clockwise")
-            }
-        } label: {
-            Label(currentGroupName, systemImage: "person.2")
+    private var sidePanel: some View {
+        SidePanelView(
+            selection: activeSheet,
+            onClose: {
+                activeSheet = nil
+                droppedPin = nil
+            },
+            onSelectContact: { focus(on: $0) }
+        ) { sheet in
+            sheetContent(for: sheet)
+        }
+    }
+
+    private var groupMenuCapsule: some View {
+        GroupMenuView { name in
+            Label(name, systemImage: "person.2")
                 .font(.subheadline)
                 .lineLimit(1)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)
                 .background(.regularMaterial, in: Capsule())
         }
-    }
-
-    private var currentGroupName: String {
-        model.groups.first(where: { $0.id == model.selectedGroupID })?.name
-            ?? ContactGroup.allContacts.name
     }
 
     @ViewBuilder
@@ -222,7 +246,6 @@ struct RootMapView: View {
     /// 一覧から選んだ連絡先へ地図を移動し、概要シートを開く
     /// (Android版 showMarkerInfoWindow(animate:) 相当)。
     private func focus(on contact: Contact) {
-        activeSheet = nil
         if let coordinate = contact.coordinate {
             withAnimation {
                 position = .region(MKCoordinateRegion(
@@ -231,10 +254,16 @@ struct RootMapView: View {
                 ))
             }
         }
-        Task {
-            // 前のシートが閉じ切るのを待ってから次を出す
-            try? await Task.sleep(for: .milliseconds(500))
+        if isWidePresentation {
+            // サイドパネル内の切り替えなので即座に表示できる
             activeSheet = .contact(contact)
+        } else {
+            activeSheet = nil
+            Task {
+                // 前のシートが閉じ切るのを待ってから次を出す
+                try? await Task.sleep(for: .milliseconds(500))
+                activeSheet = .contact(contact)
+            }
         }
     }
 
